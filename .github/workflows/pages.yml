@@ -22,20 +22,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version-file: .tool-versions
-          cache: true
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: deno ci
+        run: bun install
 
       - name: Verify code integrity
-        run: deno task tests
+        run: |
+          bun run lint
+          bun test
 
       - name: Build Application
-        run: deno task esbuild noversion
+        run: bun run ./scripts/build.ts --noversion
 
       - name: Prepare static assets for GitHub Pages
         run: |

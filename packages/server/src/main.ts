@@ -1,58 +1,75 @@
-/// <reference lib="deno.ns" />
+import { join } from "node:path";
+import { existsSync } from "node:fs";
 
-import { serveDir, } from "@std/http/file-server";
-import { fromFileUrl, } from "@std/path";
+const rawPort = process.env.PORT;
+const port = rawPort ? Number(rawPort) : 3000;
 
-const rawPort = Deno.env.get("PORT",);
-const port = rawPort ? Number(rawPort,) : 3000;
-
-const fsRoot = (() => {
-  const distUrl = fromFileUrl(new URL("../build/dist", import.meta.url,),);
-  try {
-    Deno.statSync(distUrl,);
-    return distUrl;
-  } catch {
-    try {
-      Deno.statSync("./build/dist",);
-      return "./build/dist";
-    } catch {
-      return "./packages/server/build/dist";
-    }
+// Resolve static dist directory
+const distDir = (() => {
+  const possiblePaths = [
+    join(import.meta.dir, "../build/dist"),
+    join(process.cwd(), "packages/server/build/dist"),
+    join(process.cwd(), "build/dist"),
+  ];
+  for (const p of possiblePaths) {
+    if (existsSync(p)) return p;
   }
+  return possiblePaths[0]!;
 })();
 
-Deno.serve({ port, hostname: "0.0.0.0", }, async (req,) => {
-  try {
-    const url = new URL(req.url,);
-    console.debug(`[REQ] ${req.method} ${url.pathname}`,);
+const server = Bun.serve({
+  port,
+  hostname: "0.0.0.0",
+  async fetch(req: Request) {
+    try {
+      const url = new URL(req.url);
+      console.debug(`[REQ] ${req.method} ${url.pathname}`);
 
-    const staticResponse = await serveDir(req, {
-      fsRoot,
-      showDirListing: false,
-      quiet: true,
-    },);
+      let pathname = decodeURIComponent(url.pathname);
+      if (pathname === "/" || pathname === "") {
+        pathname = "/index.html";
+      }
 
-    staticResponse.headers.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate",
-    );
-    staticResponse.headers.set("Pragma", "no-cache",);
-    staticResponse.headers.set("Expires", "0",);
+      const filePath = join(distDir, pathname);
+      let file = Bun.file(filePath);
 
-    // Permitir escopo global para Service Worker
-    if (url.pathname === "/sw.js" || url.pathname.endsWith("/sw.js",)) {
-      staticResponse.headers.set("Service-Worker-Allowed", "/",);
+      if (!(await file.exists())) {
+        // SPA fallback for navigation requests
+        const fallback = Bun.file(join(distDir, "index.html"));
+        if (await fallback.exists()) {
+          file = fallback;
+        } else {
+          return new Response("Not Found", { status: 404 });
+        }
+      }
+
+      const response = new Response(file);
+
+      response.headers.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      );
+      response.headers.set("Pragma", "no-cache");
+      response.headers.set("Expires", "0");
+
+      // Permitir escopo global para Service Worker
+      if (url.pathname === "/sw.js" || url.pathname.endsWith("/sw.js")) {
+        response.headers.set("Service-Worker-Allowed", "/");
+      }
+
+      return response;
+    } catch (err) {
+      console.warn(
+        `[STATIC] Falha ao servir arquivo estático. Verifique se Build foi executado?`,
+        err instanceof Error ? err.message : err,
+      );
+
+      return new Response("Internal Server Error", {
+        status: 500,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
     }
-    return staticResponse;
-  } catch (err) {
-    console.warn(
-      `[STATIC] Falha ao servir arquivo estático. Verifique se Build foi executado?`,
-      err instanceof Error ? err.message : err,
-    );
+  },
+});
 
-    return new Response("Internal Server Error", {
-      status: 500,
-      headers: { "content-type": "text/plain; charset=utf-8", },
-    },);
-  }
-},);
+console.log(`🚀 [aiStudio] Servidor Bun rodando em http://0.0.0.0:${server.port}`);

@@ -17,11 +17,11 @@ export function Footnote() {
         </span>
         <span class="chip secondary small">
           <i>bolt</i>
-          <span>Deno PWA</span>
+          <span>Bun.js PWA</span>
         </span>
       </div>
       <div class="space"></div>
-      <div class="small-text">Progressive Web App com Preact Signals e BeerCSS</div>
+      <div class="small-text">Progressive Web App com Bun.js, Preact Signals e BeerCSS</div>
       <div class="space"></div>
     </footer>
   );

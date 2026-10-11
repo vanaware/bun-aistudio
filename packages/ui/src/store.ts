@@ -60,23 +60,23 @@ export interface Task {
 export const STORAGE_KEY = "aistudio_tasks";
 export const CATEGORIES_STORAGE_KEY = "aistudio_categories";
 
-export const defaultCategories: string[] = ["Deno", "PWA", "Preact", "BeerCSS"];
+export const defaultCategories: string[] = ["Bun", "PWA", "Preact", "BeerCSS"];
 export const categories = signal<string[]>(defaultCategories);
 export const isAddingCategory = signal<boolean>(false);
 export const newCategoryInput = signal<string>("");
 
 const defaultTasks: Task[] = [
-  { id: 1, title: "Configurar Deno.bundle nativo", category: "Deno", completed: true },
+  { id: 1, title: "Configurar Bun.build nativo", category: "Bun", completed: true },
   { id: 2, title: "Registrar Service Worker offline", category: "PWA", completed: true },
   { id: 3, title: "Migrar estado reativo para Signals", category: "Preact", completed: true },
   { id: 4, title: "Aplicar Material Design 3 com BeerCSS", category: "BeerCSS", completed: true },
-  { id: 5, title: "Persistir tarefas com idb-keyval no IndexedDB", category: "Deno", completed: true },
+  { id: 5, title: "Persistir tarefas com idb-keyval no IndexedDB", category: "Bun", completed: true },
   { id: 6, title: "Validar cache e suporte offline", category: "PWA", completed: false },
 ];
 
 export const tasks = signal<Task[]>(defaultTasks);
 export const taskInput = signal<string>("");
-export const taskCategory = signal<string>("Deno");
+export const taskCategory = signal<string>("Bun");
 export const taskFilter = signal<"todas" | "pendentes" | "concluidas">("todas");
 
 export const filteredTasks = computed<Task[]>(() => {

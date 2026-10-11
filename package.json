@@ -1,14 +1,23 @@
 {
-  "name": "vanaware-aistudio-deno",
-  "version": "0.0.0",
+  "name": "vanaware-aistudio-bun",
+  "version": "v0.0.1#lc29k1a7",
   "private": true,
   "author": "Vanaware",
   "type": "module",
   "scripts": {
-    "dev": "bash ./install-script.sh && deno task esbuild && deno task dev",
-    "build": "bash ./install-script.sh && deno task esbuild",
-    "start": "bash ./install-script.sh && deno task start",
-    "lint": "deno task lint",
-    "test": "deno task test"
+    "dev": "bash ./install-script.sh && bun run ./scripts/build.ts && bun run ./packages/server/src/main.ts",
+    "build": "bash ./install-script.sh && bun run ./scripts/build.ts",
+    "start": "bash ./install-script.sh && bun run ./packages/server/src/main.ts",
+    "lint": "bun run ./scripts/lint.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@preact/signals": "^2.11.3",
+    "idb-keyval": "^6.3.0",
+    "preact": "^11.0.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "^7.0.2"
   }
 }

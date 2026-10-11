@@ -1,7 +1,7 @@
 {
   "name": "AiStudio",
   "short_name": "AiStudio",
-  "description": "Progressive Web App built with Deno, Preact, Signals and pure BeerCSS",
+  "description": "Progressive Web App built with Bun.js, Preact, Signals and pure BeerCSS",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

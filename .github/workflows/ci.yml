@@ -8,22 +8,19 @@ on:
 
 jobs:
   check-all:
-    name: Test, Lint & Format Check
+    name: Test & Lint Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version-file: .tool-versions
-          cache: true
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
 
       - name: Run tests
-        run: deno test -P
+        run: bun test
 
-      - name: Lint code
-        run: deno lint
-
-      - name: Check formatting
-        run: deno fmt --check
+      - name: Lint and type check
+        run: bun run lint
