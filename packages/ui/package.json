@@ -1,0 +1,10 @@
+{
+  "name": "@vanaware/aiStudio",
+  "version": "0.0.6",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "lint": "tsc --noEmit"
+  }
+}

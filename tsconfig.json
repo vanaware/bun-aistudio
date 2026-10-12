@@ -8,7 +8,7 @@
     "strict": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
-    "types": ["bun-types"]
+    "types": ["node", "@types/bun"]
   },
   "include": [
     "packages/ui/src/**/*",
