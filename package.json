@@ -1,6 +1,6 @@
 {
   "name": "vanaware-aistudio-bun",
-  "version": "v0.0.8#jzyli5j7",
+  "version": "v0.0.17#4m1nv28u",
   "private": true,
   "author": "Vanaware",
   "type": "module",
@@ -9,9 +9,9 @@
     "packages/ui"
   ],
   "scripts": {
-    "dev": "bash ./install-script.sh && bun run ./scripts/build.ts && bun run --filter server dev",
+    "dev": "bash ./install-script.sh && bun run ./scripts/build.ts && bun run ./packages/server/src/main.ts",
     "build": "bash ./install-script.sh && bun run ./scripts/build.ts",
-    "start": "bun run --filter server start",
+    "start": "bash ./install-script.sh && bun run ./packages/server/src/main.ts",
     "lint": "bun run ./scripts/lint.ts",
     "test": "bun test"
   },
